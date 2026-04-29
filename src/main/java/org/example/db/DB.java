@@ -3,9 +3,30 @@ package org.example.db;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.DriverManager;
 import java.util.Properties;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class DB {
+    public static Connection conn = null;
+    public static Connection getConnection(){
+        if(conn == null){
+            try{
+                Properties props = loadProperties();
+
+                String url = props.getProperty("dburl");
+
+                conn = DriverManager.getConnection(url,props);
+
+            }catch(SQLException e){
+                throw new DBException(e.getMessage());
+
+            }
+
+        }
+        return conn;
+    }
 
     public static Properties loadProperties(){
         try(FileInputStream fs = new FileInputStream("db.properties")){
